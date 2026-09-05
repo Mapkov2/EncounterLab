@@ -120,7 +120,7 @@ end)
 
 test("every direct UI phrase is included in the central English catalog", function()
     local EL = loadLocale("enUS")
-    for _, filename in ipairs({ "Bootstrap.lua", "Renderer.lua", "Input.lua", "ReferenceTrace.lua", "Interface.lua", "TrainingUI.lua", "TempestRenderer.lua", "SentinelsUI.lua", "SentinelsRenderer.lua" }) do
+    for _, filename in ipairs({ "Bootstrap.lua", "Renderer.lua", "Input.lua", "Interface.lua", "TrainingUI.lua", "TempestRenderer.lua", "SentinelsUI.lua", "SentinelsRenderer.lua" }) do
         local file = assert(io.open(base .. filename, "r"))
         local source = file:read("*a")
         file:close()

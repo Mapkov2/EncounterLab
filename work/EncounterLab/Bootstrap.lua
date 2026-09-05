@@ -7,15 +7,9 @@ local function show(command)
     if not loaded then return end
     if command == "version" then EL.Print(EL.VERSION.." / "..EL.SCENARIO_VERSION); return end
     if InCombatLockdown() then EL.Print(L["Please wait until combat ends."]); return end
-    if command == "xptrace" then
-        if EL.instance then EL.instance:Hide() end
-        EL.ReferenceTrace:Arm()
-        return
-    end
     if not EL.instance then EL.instance=EL.UI.New() end
     local ui=EL.instance
     if command == "scores" then ui:Show(); ui:ShowScores()
-    elseif command == "mousecompare" then EL.ReferenceTrace:BeginComparison(ui)
     elseif command == "mousetrace" then ui:Show(); ui.input:ArmTrace()
     elseif command == "help" then ui:Show(); ui:ShowHelp()
     elseif command == "debug" then ui:Show(); ui:ShowDiagnostics()

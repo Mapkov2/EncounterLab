@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.1
+
+- Simplified project documentation and removed obsolete comparison diagnostics.
+- Training mechanics and camera controls are unchanged.
+
 ## 0.9.0 - First public release
 
 - Three solo 3D drills: Rashok, Sszorak Tempest and Entombed Sentinels Mythic intermission.

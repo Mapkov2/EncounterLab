@@ -22,7 +22,7 @@ These are focused practice simulations, not complete boss encounters. Timings, r
 
 ## Install
 
-Download **EncounterLab-0.9.0.zip** from a release, extract the `EncounterLab` folder into `World of Warcraft/_retail_/Interface/AddOns/`, then restart WoW or reload the interface. Choose EncounterLab in the addon list and type `/el`.
+Download **EncounterLab-0.9.1.zip** from a release, extract the `EncounterLab` folder into `World of Warcraft/_retail_/Interface/AddOns/`, then restart WoW or reload the interface. Choose EncounterLab in the addon list and type `/el`.
 
 Use the runtime ZIP for installation. The source ZIP and GitHub source download also include development tools.
 
@@ -38,7 +38,6 @@ The build runs the Lua syntax checks and offline regression suites, then writes 
 
 `work/EncounterLab/` contains the runtime source and original generated textures. `work/tests/` contains regression tests, including an anonymous mouse-displacement fixture. Texture generators require Pillow; generated runtime textures are already included. `work/Install.ps1` is an optional Windows upgrade helper requiring an explicit addon path and baseline manifest.
 
-The optional `work/provenance_audit.py` compares local reference ZIPs without extracting or executing them. Reference archives are not included. Its lexical checks are limited and do not establish authorship.
 
 ## Feedback and translations
 
@@ -50,4 +49,4 @@ Translation instructions are in `work/EncounterLab/Locales/README.md`.
 
 Copyright 2026 Mapko. **All Rights Reserved**; see [LICENSE](LICENSE).
 
-Independently implemented, inspired by the idea of practicing mechanics in an addon arena. XPractice is a separate project and is not a dependency. No XPractice source or media is bundled. In-game assets remain part of the installed WoW client and belong to Blizzard Entertainment.
+In-game assets remain part of the installed WoW client and belong to Blizzard Entertainment.

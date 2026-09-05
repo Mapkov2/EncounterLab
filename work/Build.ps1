@@ -33,8 +33,6 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'View motion cadence tests failed' }
     & lua 'tests\mouse_trace_test.lua'
     if ($LASTEXITCODE -ne 0) { throw 'Mouse trace tests failed' }
-    & lua 'tests\reference_trace_test.lua'
-    if ($LASTEXITCODE -ne 0) { throw 'Reference comparison tests failed' }
     & lua 'tests\scene_assets_test.lua'
     if ($LASTEXITCODE -ne 0) { throw 'Native scene tests failed' }
     & lua 'tests\sentinels_arena_test.lua'

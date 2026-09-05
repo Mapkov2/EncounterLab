@@ -122,7 +122,7 @@ function GetLocale() return 'enUS' end
 function GetBindingKey(action) bindingReads=bindingReads+1;return unpack(nativeBindings[action] or {}) end
 function SetBinding() error('training must never modify native bindings') end
 function SaveBindings() error('training must never save native bindings') end
-local EL={};for _,f in ipairs({'Namespace.lua','Locale.lua','Theme.lua','MouseCapture.lua','Persistence.lua','Simulation.lua','Sszorak.lua','Sentinels.lua','Rehearsal.lua','SceneAssets.lua','ArenaRoom.lua','ViewMotion.lua','Renderer.lua','TempestRenderer.lua','SentinelsRenderer.lua','SentinelsArena.lua','Input.lua','ReferenceTrace.lua','Interface.lua','TrainingUI.lua','SentinelsUI.lua','Bootstrap.lua'}) do assert(loadfile(base..f))('EncounterLab',EL) end
+local EL={};for _,f in ipairs({'Namespace.lua','Locale.lua','Theme.lua','MouseCapture.lua','Persistence.lua','Simulation.lua','Sszorak.lua','Sentinels.lua','Rehearsal.lua','SceneAssets.lua','ArenaRoom.lua','ViewMotion.lua','Renderer.lua','TempestRenderer.lua','SentinelsRenderer.lua','SentinelsArena.lua','Input.lua','Interface.lua','TrainingUI.lua','SentinelsUI.lua','Bootstrap.lua'}) do assert(loadfile(base..f))('EncounterLab',EL) end
 local failures,checks=0,0
 local function test(name,fn) checks=checks+1;local ok,err=pcall(fn);if ok then print('PASS '..name) else failures=failures+1;print('FAIL '..name..': '..tostring(err)) end end
 local function fire(frame,event,...) assert(frame.scripts[event],'missing '..event);return frame.scripts[event](frame,...) end

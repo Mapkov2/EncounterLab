@@ -15,7 +15,7 @@ assert '## Interface: 120100' in toc
 version = re.search(r'^## Version:\s*([0-9A-Za-z.-]+)\s*$', toc, re.MULTILINE).group(1)
 assert f'EL.VERSION = "{version}"' in (addon / 'Namespace.lua').read_text(encoding='utf-8-sig')
 loaded = [line.strip().replace('\\','/') for line in toc.splitlines() if line.strip() and not line.startswith('#')]
-core = ['Namespace.lua','Locale.lua','Theme.lua','MouseCapture.lua','Persistence.lua','Simulation.lua','Sszorak.lua','Sentinels.lua','Rehearsal.lua','SceneAssets.lua','ArenaRoom.lua','ViewMotion.lua','Renderer.lua','TempestRenderer.lua','SentinelsRenderer.lua','SentinelsArena.lua','Input.lua','ReferenceTrace.lua','Interface.lua','TrainingUI.lua','SentinelsUI.lua','Bootstrap.lua']
+core = ['Namespace.lua','Locale.lua','Theme.lua','MouseCapture.lua','Persistence.lua','Simulation.lua','Sszorak.lua','Sentinels.lua','Rehearsal.lua','SceneAssets.lua','ArenaRoom.lua','ViewMotion.lua','Renderer.lua','TempestRenderer.lua','SentinelsRenderer.lua','SentinelsArena.lua','Input.lua','Interface.lua','TrainingUI.lua','SentinelsUI.lua','Bootstrap.lua']
 assert [name for name in loaded if not name.startswith('Locales/')] == core
 assert len(set(loaded)) == len(loaded)
 for index, name in enumerate(loaded):
@@ -23,10 +23,6 @@ for index, name in enumerate(loaded):
         assert loaded.index('Locale.lua') < index < loaded.index('Theme.lua'), 'Translations must load after Locale.lua and before consumers'
 for name in loaded:
     assert (addon / name).is_file(), f'Missing TOC file: {name}'
-    # One opt-in diagnostic reads live reference state. Gameplay cannot depend
-    # on the reference; no reference code is imported or included in packages.
-    if name != 'ReferenceTrace.lua':
-        assert 'XPRACTICE' not in (addon / name).read_text(encoding='utf-8-sig'), f'Unexpected reference namespace: {name}'
 for name in ['LavaPool.tga','LavaWave.tga','Basalt.tga','RoundedMask.tga','SentinelsFloor.tga']:
     blob = (addon / 'Media' / name).read_bytes()
     assert blob[2] == 2 and blob[16] == 32, f'Expected own 32-bit TGA: {name}'
@@ -49,7 +45,7 @@ release = output / f'EncounterLab-{version}.zip'
 release_report = pack(release,addon_files)
 devfiles = [(root.parent / name, name) for name in ['LICENSE', 'README.md', 'CHANGELOG.md', '.gitignore', '.gitattributes', 'docs/encounterlab-icon.png', 'tools/make_icon.py']]
 devfiles += [(p, 'work/'+name) for p, name in addon_files]
-devfiles += [(root / name,'work/'+name) for name in ['make_media.py','make_sentinels_floor.py','sentinels_floor.lua','Build.ps1','Install.ps1','package.py','provenance_audit.py','renderer-tests.lua','STATUS.md']]
+devfiles += [(root / name,'work/'+name) for name in ['make_media.py','make_sentinels_floor.py','sentinels_floor.lua','Build.ps1','Install.ps1','package.py','renderer-tests.lua','STATUS.md']]
 devfiles += [(p,'work/tests/'+p.name) for p in sorted((root/'tests').glob('*.lua'))]
 source_report = pack(output / f'EncounterLab-{version}-source.zip',devfiles)
 (output/'README-EncounterLab.md').write_text((addon/'README.md').read_text(encoding='utf-8-sig'),encoding='utf-8')

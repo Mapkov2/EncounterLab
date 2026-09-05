@@ -221,7 +221,7 @@ function Input:Acquire()
 end
 
 function Input:Release()
-    if self.trace and (self.trace.startedAt or (EL.ReferenceTrace and EL.ReferenceTrace.compareInput==self)) then
+    if self.trace and self.trace.startedAt then
         self:StopTrace("input_released")
     end
     self:Clear()
@@ -256,7 +256,6 @@ function Input:StopTrace(reason)
     self.trace = nil
     self.ui.renderer:HideTraceStamp()
     self.ui:Notice(L["Mouse trace saved. Use /reload to write the local recording."])
-    if EL.ReferenceTrace then EL.ReferenceTrace:TrainingFinished(self,reason) end
 end
 
 function Input:TraceFrame(elapsed, state)

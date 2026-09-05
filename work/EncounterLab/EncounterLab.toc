@@ -2,8 +2,8 @@
 ## Title: EncounterLab
 ## Notes: Independent 3D mechanics practice. Rashok, Sszorak and Sentinels solo drills, checkpoints, mistake replay and local highscores.
 ## Author: Mapko
-## Version: 0.9.0
-## SavedVariables: EncounterLabDB, EncounterLabMouseTrace, EncounterLabReferenceTrace
+## Version: 0.9.1
+## SavedVariables: EncounterLabDB, EncounterLabMouseTrace
 ## Category: Minigames
 ## X-Wago-ID: BNBmPgGx
 ## X-License: All Rights Reserved
@@ -26,7 +26,6 @@ TempestRenderer.lua
 SentinelsRenderer.lua
 SentinelsArena.lua
 Input.lua
-ReferenceTrace.lua
 Interface.lua
 TrainingUI.lua
 SentinelsUI.lua
