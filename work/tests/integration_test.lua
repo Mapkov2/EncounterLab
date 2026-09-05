@@ -30,7 +30,11 @@ function common:GetFrameLevel() return self.level end
 function common:SetFrameLevel(n) local delta=n-self.level;self.level=n;for _,child in ipairs(self.children) do child:SetFrameLevel(child.level+delta) end end
 function common:SetFrameStrata(strata) self.strata=strata end
 function common:EnableMouse(enabled) self.mouseEnabled=enabled end
-function common:SetFont(path,size,flags) assert(type(path)=='string' and type(size)=='number');self.font,self.fontSize,self.fontFlags=path,size,flags;return true end
+function common:SetFont(path,size,flags)
+ assert(type(path)=='string' and type(size)=='number')
+ assert(path:match('^Fonts\\'), 'Standalone client cannot load external font: '..path)
+ self.font,self.fontSize,self.fontFlags=path,size,flags;return true
+end
 function common:GetFont() return self.font or STANDARD_TEXT_FONT,self.fontSize or 13,self.fontFlags or '' end
 function common:SetTexture(path) assert(type(path)=='string' or type(path)=='number' or path==nil);self.texture=path;return true end
 function common:SetVertexColor(...) self.vertexColor={...} end
@@ -102,7 +106,7 @@ function actor:SetModelByUnit() return true end
 function actor:SetModelByCreatureDisplayID(id) self.displayID=id;return true end
 function CreateFrame(kind,name,parent) return object(kind,parent,name) end
 UIParent=object('Frame');UIParent:SetSize(1920,1080)
-STANDARD_TEXT_FONT='mock';SlashCmdList={};DEFAULT_CHAT_FRAME={AddMessage=noop}
+STANDARD_TEXT_FONT='Fonts\\FRIZQT__.TTF';SlashCmdList={};DEFAULT_CHAT_FRAME={AddMessage=noop}
 function GetTime() return now end
 function time() return 1788500000 end
 function date() return '2026-09-04' end
@@ -132,6 +136,21 @@ local function clickText(ui,text)
 end
 local events=frames[#frames];fire(events,'OnEvent','ADDON_LOADED','EncounterLab')
 local ui,rawUIUpdate
+test('standalone theme uses client fonts for headings, captions and edit boxes across locales',function()
+ local original=STANDARD_TEXT_FONT
+ for _,face in ipairs({'Fonts\\FRIZQT__.TTF','Fonts\\FRIZQT___CYR.TTF','Fonts\\2002.TTF','Fonts\\ARKai_T.ttf','Fonts\\blei00d.TTF'}) do
+  STANDARD_TEXT_FONT=face
+  for _,kind in ipairs({'FontString','EditBox'}) do
+   local widget=object(kind)
+   EL.Theme.Font(widget,21,true);assert(widget.font==face and widget.fontSize==21)
+   EL.Theme.Font(widget,13,false);assert(widget.font==face and widget.fontSize==13)
+  end
+ end
+ STANDARD_TEXT_FONT=nil
+ local widget=object('FontString');EL.Theme.Font(widget,13)
+ assert(widget.font=='Fonts\\FRIZQT__.TTF')
+ STANDARD_TEXT_FONT=original
+end)
 local function openArena()
  ui:Show()
  if ui.selectingEncounter then ui:SelectEncounter(ui.options.scenario) end

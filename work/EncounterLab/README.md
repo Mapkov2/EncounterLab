@@ -22,7 +22,7 @@ These are focused practice simulations, not complete boss encounters. Timings, r
 
 ## Install
 
-Download **EncounterLab-0.9.1.zip** from a release, extract the `EncounterLab` folder into `World of Warcraft/_retail_/Interface/AddOns/`, then restart WoW or reload the interface. Choose EncounterLab in the addon list and type `/el`.
+Download **EncounterLab-0.9.2.zip** from a release, extract the `EncounterLab` folder into `World of Warcraft/_retail_/Interface/AddOns/`, then restart WoW or reload the interface. Choose EncounterLab in the addon list and type `/el`.
 
 Use the runtime ZIP for installation. The source ZIP and GitHub source download also include development tools.
 

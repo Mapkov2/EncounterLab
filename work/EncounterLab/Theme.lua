@@ -2,8 +2,7 @@ local _, EL = ...
 local Theme = {}
 EL.Theme = Theme
 
--- Original controls styled to match MSUF's stock Midnight palette. No MSUF
--- implementation or media is bundled; its installed font is optional.
+-- Original Midnight-style controls, using only client-provided fonts.
 Theme.colors = {
     shell={.020,.039,.071,.98}, rail={.027,.063,.106,.97},
     content={.035,.067,.114,.96}, raised={.055,.098,.161,.98},
@@ -51,10 +50,9 @@ function Theme.Panel(frame, color)
 end
 
 function Theme.Font(font, size, heading)
-    local face = heading and "Expressway SemiBold.ttf" or "Expressway Regular.ttf"
-    if not font:SetFont("Interface\\AddOns\\MidnightSimpleUnitFrames\\Media\\Fonts\\"..face,size,"") then
-        font:SetFont("Fonts\\ARIALN.TTF",size,"")
-    end
+    -- Missing assets report a native error before SetFont can return false.
+    -- Select the client's locale-aware font without probing another addon.
+    font:SetFont(STANDARD_TEXT_FONT or "Fonts\\FRIZQT__.TTF",size,"")
     font:SetTextColor(unpack(Theme.colors.text))
     font:SetShadowColor(0,0,0,.35)
     font:SetShadowOffset(1,-1)

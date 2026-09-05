@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.2
+
+- Fixed startup errors when MidnightSimpleUnitFrames is not installed: all menu fonts now use the WoW client standard font for the active language.
+- Added standalone UI regression coverage that rejects external font paths.
+
 ## 0.9.1
 
 - Simplified project documentation and removed obsolete comparison diagnostics.

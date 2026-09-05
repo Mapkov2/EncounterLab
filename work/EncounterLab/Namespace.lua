@@ -1,6 +1,6 @@
 local addonName, EL = ...
 EL.NAME = addonName or "EncounterLab"
-EL.VERSION = "0.9.1"
+EL.VERSION = "0.9.2"
 EL.SCENARIO_VERSION = "rashok-lava-3"
 EL.TARGET_INTERFACE = 120100
 EL.COLOR = { accent = {.231, .510, .965}, background = {.020, .039, .071}, text = {.933, .957, 1} }
