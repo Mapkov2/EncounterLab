@@ -1,0 +1,30 @@
+## Interface: 120100
+## Title: EncounterLab
+## Notes: Independent 3D mechanics practice. Rashok, Sszorak and Sentinels solo drills, checkpoints, mistake replay and local highscores.
+## Author: Marco
+## Version: 0.9.0
+## SavedVariables: EncounterLabDB, EncounterLabMouseTrace, EncounterLabReferenceTrace
+## Category: Minigames
+
+Namespace.lua
+Locale.lua
+Theme.lua
+MouseCapture.lua
+Persistence.lua
+Simulation.lua
+Sszorak.lua
+Sentinels.lua
+Rehearsal.lua
+SceneAssets.lua
+ArenaRoom.lua
+ViewMotion.lua
+Renderer.lua
+TempestRenderer.lua
+SentinelsRenderer.lua
+SentinelsArena.lua
+Input.lua
+ReferenceTrace.lua
+Interface.lua
+TrainingUI.lua
+SentinelsUI.lua
+Bootstrap.lua
