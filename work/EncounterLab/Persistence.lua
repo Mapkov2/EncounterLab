@@ -73,7 +73,7 @@ end
 local function options(input)
     input = type(input) == "table" and input or {}
     local result = {
-        scenario = (input.scenario == "sszorak" or input.scenario == "sentinels") and input.scenario or "rashok",
+        scenario = (input.scenario == "sszorak" or input.scenario == "sentinels" or input.scenario == "twinfangs") and input.scenario or "rashok",
         sentinelsNumber = integer(input.sentinelsNumber, 0, 0, 3),
         sentinelsReveal = integer(input.sentinelsReveal, 2, 1, 5),
         sszorakDrill = "tempest",

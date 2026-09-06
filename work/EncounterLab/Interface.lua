@@ -375,15 +375,15 @@ function UI:Start(repeatRun)
     options.sszorakCheckpoint=repeatRun and self.lastRunOptions and self.lastRunOptions.sszorakCheckpoint or self.options.sszorakCheckpoint
     options.sentinelsNumber=repeatRun and self.lastRunOptions and self.lastRunOptions.sentinelsNumber or self.options.sentinelsNumber
     options.sentinelsReveal=repeatRun and self.lastRunOptions and self.lastRunOptions.sentinelsReveal or self.options.sentinelsReveal
-    if options.scenario=="sszorak" or options.scenario=="sentinels" then options.loop=1 end
+    if options.scenario~="rashok" then options.loop=1 end
     self.lastRunOptions=options
     self.options.seed=seed
     EL.Store.SaveOptions(self.options)
     self.seedBox:SetText(tostring(seed))
     if self.sim then self:RecordAbandoned(); self.sim:Destroy() end
-    self.sim=options.scenario=="sentinels" and EL.Sentinels.New(options) or options.scenario=="sszorak" and EL.Sszorak.New(options) or EL.Simulation.New(options)
+    self.sim=options.scenario=="twinfangs" and EL.TwinFangs.New(options) or options.scenario=="sentinels" and EL.Sentinels.New(options) or options.scenario=="sszorak" and EL.Sszorak.New(options) or EL.Simulation.New(options)
     self.renderer:SetEncounter(options.scenario)
-    self.rehearsal=options.scenario=="sszorak" and EL.Rehearsal.New(self.sim) or nil
+    self.rehearsal=(options.scenario=="sszorak" or options.scenario=="twinfangs") and EL.Rehearsal.New(self.sim) or nil
     self.recorded=false
     self.aiming=nil
     self.camera.yaw,self.camera.pitch,self.camera.distance=self.sim.state.player.yaw,math.pi*.075,60
@@ -444,7 +444,7 @@ function UI:Update(elapsed)
     if self.sim then
         local previousYaw=state.player.yaw
         local diagnostics=self.renderer.diagnostics
-        self.loadingScene=not self.renderer.projectionValid or diagnostics.playerModel~="ready" or (state.scenario~="sentinels" and diagnostics.bossModel~="ready")
+        self.loadingScene=not self.renderer.projectionValid or diagnostics.playerModel~="ready" or (state.scenario~="sentinels" and state.scenario~="twinfangs" and diagnostics.bossModel~="ready")
         if not self.loadingScene then
             controls.strafe=controls.strafe*(self.renderer.lateralInputSign or 1)
             self.sim:Advance(elapsed,controls)
@@ -681,10 +681,10 @@ end
 
 function UI:ShowScores(filter)
     self.boardFilter=filter or self.boardFilter or "reference"
-    self:Modal(self.options.scenario=="sszorak" and EL.F("Highscores: %s",self:SelectedDrillName()) or EL.F("Highscores Â· Loop %d",self.options.loop))
+    self:Modal(self.options.scenario=="twinfangs" and EL.F("Highscores: %s",L["Twin Fangs - Heroic"]) or self.options.scenario=="sszorak" and EL.F("Highscores: %s",self:SelectedDrillName()) or EL.F("Highscores Â· Loop %d",self.options.loop))
     self.modalBody:ClearAllPoints(); self.modalBody:SetPoint("TOPLEFT",22,-118); self.modalBody:SetHeight(370)
     local seedFilter=self.boardSeedOnly and tonumber(self.seedBox:GetText()) or nil
-    local entries=EL.Store.GetBoard(self.boardFilter,self.options.scenario=="sszorak" and 1 or self.options.loop,seedFilter,self.options.scenario=="sszorak" and EL.Sszorak.Version(self.options) or EL.SCENARIO_VERSION)
+    local entries=EL.Store.GetBoard(self.boardFilter,self.options.scenario~="rashok" and 1 or self.options.loop,seedFilter,self.options.scenario=="twinfangs" and EL.TwinFangs.Version() or self.options.scenario=="sszorak" and EL.Sszorak.Version(self.options) or EL.SCENARIO_VERSION)
     local lines={}
     for i,entry in ipairs(entries) do
         lines[#lines+1]=EL.F("%d.  %.2f%% alive Â· %d hits Â· %d points Â· Seed %d",i,entry.survivalPercent or 0,entry.deaths or 0,entry.score or 0,entry.seed or 0)
@@ -712,7 +712,8 @@ function UI:ShowHistory()
         local e=history[i]
         local text=EL.F("Loop %d Â· %.1f%% Â· %d hits Â· Seed %d Â· %s",e.loop,e.survivalPercent or 0,e.deaths,e.seed,modeNames[e.mode] or "")
         if e.version and e.version:match("^sentinels%-") then text=EL.F("Sentinels / %.2f s / Seed %d",e.matchTime or 0,e.seed) end
-        if e.version and e.version:match("^sszorak%-") then text=EL.F("%s: %s",self:VersionName(e.version),text)
+        if e.version and e.version:match("^twinfangs%-") then text=EL.F("%s: %s",L["Twin Fangs - Heroic"],text)
+        elseif e.version and e.version:match("^sszorak%-") then text=EL.F("%s: %s",self:VersionName(e.version),text)
         else text=EL.F("%s: %s",L["Rashok"],text) end
         lines[#lines+1]=e.interrupted and EL.F("%s Â· Interrupted",text) or text
     end

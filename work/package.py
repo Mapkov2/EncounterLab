@@ -15,7 +15,7 @@ assert '## Interface: 120100' in toc
 version = re.search(r'^## Version:\s*([0-9A-Za-z.-]+)\s*$', toc, re.MULTILINE).group(1)
 assert f'EL.VERSION = "{version}"' in (addon / 'Namespace.lua').read_text(encoding='utf-8-sig')
 loaded = [line.strip().replace('\\','/') for line in toc.splitlines() if line.strip() and not line.startswith('#')]
-core = ['Namespace.lua','Locale.lua','Theme.lua','MouseCapture.lua','Persistence.lua','Simulation.lua','Sszorak.lua','Sentinels.lua','Rehearsal.lua','SceneAssets.lua','ArenaRoom.lua','ViewMotion.lua','Renderer.lua','TempestRenderer.lua','SentinelsRenderer.lua','SentinelsArena.lua','Input.lua','Interface.lua','TrainingUI.lua','SentinelsUI.lua','Bootstrap.lua']
+core = ['Namespace.lua','Locale.lua','Theme.lua','MouseCapture.lua','Persistence.lua','Simulation.lua','Sszorak.lua','Sentinels.lua','TwinFangs.lua','Rehearsal.lua','SceneAssets.lua','ArenaRoom.lua','ViewMotion.lua','Renderer.lua','TempestRenderer.lua','TwinFangsRenderer.lua','SentinelsRenderer.lua','SentinelsArena.lua','Input.lua','Interface.lua','TrainingUI.lua','SentinelsUI.lua','TwinFangsUI.lua','Bootstrap.lua']
 assert [name for name in loaded if not name.startswith('Locales/')] == core
 assert len(set(loaded)) == len(loaded)
 for index, name in enumerate(loaded):
@@ -43,7 +43,7 @@ assert len(addon_files) == len(loaded) + 9, 'Only TOC, README, LICENSE, locale R
 assert all(not any(part in ('.git', 'work', 'outputs', '__pycache__') for part in p.relative_to(addon).parts) for p, _ in addon_files)
 release = output / f'EncounterLab-{version}.zip'
 release_report = pack(release,addon_files)
-devfiles = [(root.parent / name, name) for name in ['LICENSE', 'README.md', 'CHANGELOG.md', '.gitignore', '.gitattributes', 'docs/encounterlab-icon.png', 'tools/make_icon.py']]
+devfiles = [(root.parent / name, name) for name in ['LICENSE', 'README.md', 'CHANGELOG.md', '.gitignore', '.gitattributes', 'docs/encounterlab-icon.png', 'docs/twin-fangs.md', 'tools/make_icon.py']]
 devfiles += [(p, 'work/'+name) for p, name in addon_files]
 devfiles += [(root / name,'work/'+name) for name in ['make_media.py','make_sentinels_floor.py','sentinels_floor.lua','Build.ps1','Install.ps1','package.py','renderer-tests.lua','STATUS.md']]
 devfiles += [(p,'work/tests/'+p.name) for p in sorted((root/'tests').glob('*.lua'))]

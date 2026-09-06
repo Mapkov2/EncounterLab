@@ -44,6 +44,13 @@ function Room:SetEncounter(id)
                 end
                 add(self,set,8117702,side*65,0,-2,19,"width",false,side<0 and 0 or pi,true)
             end
+        elseif id=="twinfangs" then
+            -- Open stone practice platform; no unverified claim of a raid WMO.
+            set.floor=add(self,set,2438939,0,0,-.06,84,"floor",true)
+            for i=0,3 do
+                local a=pi/4+i*pi/2
+                add(self,set,8117702,cos(a)*55,sin(a)*55,-2,20,"width",false,a+pi,true)
+            end
         elseif id=="sszorak" then
             -- Carved Zandalari stone; six architectural bays match the reference
             -- orientation. Ula'tek murals are the actual client raid decorations.

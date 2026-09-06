@@ -4,6 +4,9 @@ local names={tempest=L["Tempest"],wind=L["Wind"],combined=L["Combined"]}
 local checkpoints={L["Preparation"],L["Wind 1"],L["Wind 2"],L["Wind 3"]}
 local volleys={L["Start"],L["Middle"],L["Final"]}
 local reasons={
+    ["Vile Flood"]=L["Vile Flood"],
+    ["Sanguine Storm"]=L["Sanguine Storm"],
+    ["Congealed Gore"]=L["Congealed Gore"],
     ["Tempest tornado"]=L["Tempest tornado"],
     ["Fell off the platform"]=L["Fell off the platform"],
 }
@@ -41,7 +44,7 @@ function UI:UpdateControls()
     end
 end
 function UI:SelectEncounter(id)
-    id=(id=="sszorak" or id=="sentinels") and id or "rashok"
+    id=(id=="sszorak" or id=="sentinels" or id=="twinfangs") and id or "rashok"
     if self.sim and (self.sim.state.scenario or "rashok")~=id then
         self:RecordAbandoned();self.sim:Destroy();self.sim=nil;self.rehearsal=nil
         self.lastRunOptions=nil;self.recorded=false
@@ -55,6 +58,7 @@ function UI:SelectEncounter(id)
     self.preview.arenaRadius=id=="sszorak" and 42 or nil
     self.preview.tornadoes={}
     self.preview.raiders=nil
+    self.preview.impacts=nil;self.preview.flood=nil;self.preview.beamActive=nil
     if id=="sentinels" then self.preview.arenaRadius=40 end
     local p=self.preview.player
     p.x,p.y,p.yaw=id=="sszorak" and 0 or 24.32,id=="sszorak" and -8 or 14.44,id=="sszorak" and math.pi/2 or -math.pi*5/6
@@ -67,11 +71,12 @@ function UI:ShowEncounters()
     self.selectingEncounter=true
     self:ApplyLayout()
     self:Modal(L["Encounters"])
-    self.modal:SetHeight(375);self.modalBody:SetHeight(120)
-    self.modalBody:SetText(L["Choose an encounter. Its drills and settings appear in the training menu.\n\nRashok: lava waves and frontals.\nSszorak: dodge moving Tempest tornadoes.\nSentinels: Mythic toxin pairing."])
+    self.modal:SetHeight(417);self.modalBody:SetHeight(134)
+    self.modalBody:SetText(L["Choose an encounter. Its drills and settings appear in the training menu.\n\nRashok: lava waves and frontals.\nSszorak: dodge moving Tempest tornadoes.\nSentinels: Mythic toxin pairing.\nTwin Fangs: Heroic intermission dodging."])
     self:ModalButton(L["Rashok"],22,200,586,function() self:SelectEncounter("rashok") end):Selected(self.options.scenario=="rashok")
     self:ModalButton(L["Sszorak"],22,242,586,function() self:SelectEncounter("sszorak") end):Selected(self.options.scenario=="sszorak")
     self:ModalButton(L["Entombed Sentinels - Mythic"],22,284,586,function() self:SelectEncounter("sentinels") end):Selected(self.options.scenario=="sentinels")
+    self:ModalButton(L["Twin Fangs - Heroic"],22,326,586,function() self:SelectEncounter("twinfangs") end):Selected(self.options.scenario=="twinfangs")
 end
 function UI:ShowTrainingTools()
     self:Modal(L["Sszorak - Tempest"])

@@ -241,14 +241,14 @@ function Renderer:HideTraceStamp()
 end
 
 function Renderer:SetEncounter(id)
-    id=(id=="sszorak" or id=="sentinels") and id or "rashok"
+    id=(id=="sszorak" or id=="sentinels" or id=="twinfangs") and id or "rashok"
     if not self.room then self.room=EL.ArenaRoom.New(self.frame) end
     self.room:SetEncounter(id)
     if id=="sentinels" and not self.sentinelsArena then self.sentinelsArena=EL.SentinelsArena.New(self.floorFrame) end
     if id~="sentinels" and self.sentinelsArena then self.sentinelsArena:Hide() end
     if self.encounter==id then return end
     self.encounter=id
-    if id=="sszorak" or id=="sentinels" then
+    if id=="sszorak" or id=="sentinels" or id=="twinfangs" then
         self.frame:SetLightAmbientColor(.52,.59,.52)
         self.frame:SetLightDiffuseColor(.54,.65,.48)
         self.backdrop:SetColorTexture(.012,.024,.022,1)
@@ -263,11 +263,21 @@ function Renderer:SetEncounter(id)
     self.bossAnimation,self.bossAnimationSpeed=nil,nil
     self.diagnostics.bossDisplayID=nil
     self.bossLabel:SetText(id=="sszorak" and L["Sszorak"] or L["Rashok"])
-    self.assets:SetArenaRadius(id=="sentinels" and 40 or id=="sszorak" and 42 or 100)
+    self.assets:SetArenaRadius(id=="sentinels" and 40 or (id=="sszorak" or id=="twinfangs") and 42 or 100)
     if id=="sszorak" and not self.tempestRenderer then self.tempestRenderer=EL.TempestRenderer.New(self) end
     if id~="sszorak" and self.tempestRenderer then self.tempestRenderer:Hide() end
     if id=="sentinels" and not self.sentinelsRenderer then self.sentinelsRenderer=EL.SentinelsRenderer.New(self) end
     if id~="sentinels" and self.sentinelsRenderer then self.sentinelsRenderer:Hide() end
+    if id=="twinfangs" and not self.twinFangsRenderer then self.twinFangsRenderer=EL.TwinFangsRenderer.New(self) end
+    if id~="twinfangs" and self.twinFangsRenderer then self.twinFangsRenderer:Hide() end
+    for _,fill in ipairs(self.frontalFills) do
+        if id=="twinfangs" then fill:SetColorTexture(.35,1,.06,.38)
+        else fill:SetColorTexture(1,.12,.025,.32) end
+    end
+    for _,edge in ipairs(self.frontalEdges) do
+        if id=="twinfangs" then edge:SetColorTexture(.5,1,.08,.95)
+        else edge:SetColorTexture(1,.4,.08,1) end
+    end
     self:ResetMotion()
 end
 
@@ -484,7 +494,7 @@ function Renderer:DrawFrontal(frontal)
     if frontal then
         local a, b = self.frontalPolyA, self.frontalPolyB
         local points = circle[FRONTAL_VERTICES]
-        for i = 1, FRONTAL_VERTICES*2 do a[i] = points[i]*FRONTAL_FLOOR_RADIUS end
+        for i = 1, FRONTAL_VERTICES*2 do a[i] = points[i]*(frontal.floorRadius or FRONTAL_FLOOR_RADIUS) end
         local half = (frontal.width or pi/2)/2
         local yaw = frontal.yaw or 0
         local lx, ly = cos(yaw+half), sin(yaw+half)
@@ -521,6 +531,12 @@ function Renderer:CheckAssets(now)
     if self.playerActor:IsLoaded() then
         self.diagnostics.playerModel = "ready"
     elseif self.assetChecks > 20 then self.diagnostics.playerModel = "not loaded" end
+    if self.encounter=="twinfangs" then
+        self.twinFangsRenderer:Check(now)
+        self.diagnostics.bossModel=self.twinFangsRenderer.vexhul.loaded and self.twinFangsRenderer.ithraz.loaded and "ready" or "loading"
+        self.statusLabel:SetText(self.diagnostics.bossModel=="ready" and "" or L["Boss models loading - ground markers remain active"])
+        return
+    end
     if self.encounter=="sentinels" then
         self.sentinelsRenderer:Check(now)
         -- Boss decorations never block movement practice; raiders have label fallbacks.
@@ -713,7 +729,7 @@ function Renderer:Render(state, camera, alpha, elapsed)
         self:DrawRing(self.slamRing, slam.x, slam.y, radius)
         self:DrawRing(self.slamInner, slam.x, slam.y, radius * clamp(((slam.ends or state.time) - state.time) / 2.5, 0, 1))
     else hideRing(self.slamRing); hideRing(self.slamInner) end
-    local frontal = state.frontal
+    local frontal = state.scenario=="twinfangs" and state.flood or state.frontal
     self:DrawFrontal(frontal)
     if frontal then
         local yaw, arc, radius = frontal.yaw or 0, frontal.width or pi / 2, frontal.radius or 220
@@ -729,6 +745,7 @@ function Renderer:Render(state, camera, alpha, elapsed)
     end
     if self.tempestRenderer and state.scenario=="sszorak" then self.tempestRenderer:Draw(self,state,self.replayTrail) end
     if self.sentinelsRenderer and state.scenario=="sentinels" then self.sentinelsRenderer:Draw(self,state) end
+    if self.twinFangsRenderer and state.scenario=="twinfangs" then self.twinFangsRenderer:Draw(self,state,self.replayTrail) end
     self:CheckAssets(now)
 end
 
@@ -740,6 +757,7 @@ function Renderer:GetDiagnostics()
     local assets = self.assets:Diagnostics()
     result.nativeActors = 2 + assets.actors + (self.room and #self.room.actors or 0) + (self.tempestRenderer and #self.tempestRenderer.tornadoes+1 or 0)
     result.nativeActors=result.nativeActors+(self.sentinelsRenderer and 22 or 0)
+    result.nativeActors=result.nativeActors+(self.twinFangsRenderer and #self.twinFangsRenderer.actors or 0)
     result.roomModels = self.room and self.room.loaded or 0
     result.nativeFloor = self.encounter~="sentinels" and assets.floorReady
     result.nativePools, result.nativeWaves = assets.poolLoaded, assets.waveLoaded
@@ -756,6 +774,7 @@ function Renderer:Destroy()
     self.bossActor:Hide(); self.bossActor:ClearModel()
     self.assets:Destroy()
     if self.sentinelsRenderer then self.sentinelsRenderer:Destroy() end
+    if self.twinFangsRenderer then self.twinFangsRenderer:Destroy() end
     if self.room then self.room:Destroy() end
     if self.sentinelsArena then self.sentinelsArena:Hide() end
     self.frame:Hide(); self.floorFrame:Hide(); self.ground:Hide(); self.overlay:Hide()

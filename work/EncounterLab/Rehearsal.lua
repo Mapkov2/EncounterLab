@@ -57,10 +57,14 @@ function R:Sample(t)
     local f=b.time>a.time and math.max(0,math.min(1,(t-a.time)/(b.time-a.time))) or 0
     local out=copy(a,self.sample);self.sample=out
     interpolatePose(out.player,a.player,b.player,f)
-    for i,h in ipairs(out.tornadoes) do
+    for i,h in ipairs(out.tornadoes or {}) do
         if h.active and b.tornadoes[i] and b.tornadoes[i].active then interpolatePose(h,a.tornadoes[i],b.tornadoes[i],f) end
     end
     out.time=a.time+(b.time-a.time)*f
+    if out.scenario=="twinfangs" then
+        out.beamYaw=EL.TwinFangs.BeamYaw(out,out.time)
+        if out.flood then out.flood.yaw=out.beamYaw end
+    end
     return out
 end
 function R:Retry()

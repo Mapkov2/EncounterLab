@@ -126,7 +126,7 @@ function GetLocale() return 'enUS' end
 function GetBindingKey(action) bindingReads=bindingReads+1;return unpack(nativeBindings[action] or {}) end
 function SetBinding() error('training must never modify native bindings') end
 function SaveBindings() error('training must never save native bindings') end
-local EL={};for _,f in ipairs({'Namespace.lua','Locale.lua','Theme.lua','MouseCapture.lua','Persistence.lua','Simulation.lua','Sszorak.lua','Sentinels.lua','Rehearsal.lua','SceneAssets.lua','ArenaRoom.lua','ViewMotion.lua','Renderer.lua','TempestRenderer.lua','SentinelsRenderer.lua','SentinelsArena.lua','Input.lua','Interface.lua','TrainingUI.lua','SentinelsUI.lua','Bootstrap.lua'}) do assert(loadfile(base..f))('EncounterLab',EL) end
+local EL={};for _,f in ipairs({'Namespace.lua','Locale.lua','Theme.lua','MouseCapture.lua','Persistence.lua','Simulation.lua','Sszorak.lua','Sentinels.lua','TwinFangs.lua','Rehearsal.lua','SceneAssets.lua','ArenaRoom.lua','ViewMotion.lua','Renderer.lua','TempestRenderer.lua','TwinFangsRenderer.lua','SentinelsRenderer.lua','SentinelsArena.lua','Input.lua','Interface.lua','TrainingUI.lua','SentinelsUI.lua','TwinFangsUI.lua','Bootstrap.lua'}) do assert(loadfile(base..f))('EncounterLab',EL) end
 local failures,checks=0,0
 local function test(name,fn) checks=checks+1;local ok,err=pcall(fn);if ok then print('PASS '..name) else failures=failures+1;print('FAIL '..name..': '..tostring(err)) end end
 local function fire(frame,event,...) assert(frame.scripts[event],'missing '..event);return frame.scripts[event](frame,...) end
@@ -1122,6 +1122,77 @@ test('Sentinels underflow shows the raid wipe reason and cannot record a ranked 
  ui.sim:_checkHazards();ui:Update(.2)
  assert(ui.centerText:GetText():find('RAID WIPE',1,true) and ui.centerText:GetText():find('Contact did not total 4',1,true))
  assert(not ui.sim:GetResult().highscoreEligible)
+end)
+test('Twin Fangs selection works before Start in fullscreen and windowed modes',function()
+ ui:ShowEncounters();assert(ui.selectingEncounter)
+ clickText(ui,'Twin Fangs - Heroic');assert(ui.options.scenario=='twinfangs' and not ui.sim)
+ for _,full in ipairs({true,false}) do
+  ui.options.fullscreen=full;ui:ApplyLayout();ui:Update(.2)
+  assert(ui.encounterButton:GetText()=='The Twin Fangs')
+  assert(ui.encounterSubtitle:GetText()=='Heroic - Flood and Storm')
+  assert(ui.fangsLabel:IsShown() and ui.drillOptionsButton:IsShown())
+  assert(not ui.loopButtons[1]:IsShown() and not ui.sentinelsPingButton:IsShown())
+  assert(ui.counterText:GetText()=='' and ui.centerText:GetText()=='Start training to rehearse the intermission')
+  assert(ui.renderer.twinFangsRenderer.vexhul.label:GetText()=='Vexhul')
+ end
+ ui:ShowHelp();assert(ui.modalBody:GetText():find('4-second cast',1,true));ui:CloseModal()
+end)
+test('Twin Fangs starts, repeats the seed, replays a failure and retries unranked',function()
+ ui:Start();ui:Update(.1);ui:Update(.1)
+ assert(ui.sim.state.scenario=='twinfangs' and ui.rehearsal and not ui.loadingScene)
+ local seed=ui.sim.options.seed;local heading=ui.sim.state.beamStart
+ ui:Start(true);assert(ui.sim.options.seed==seed and ui.sim.state.beamStart==heading)
+ ui:Update(.2);ui.sim.state.player.x=50;ui.sim:_checkHazards();ui:Update(.2)
+ assert(ui.centerText:GetText():find('Dodge failed',1,true) and ui.rehearsal.frozen)
+ ui:BeginReplay();ui:Update(.1);assert(ui.replay and ui.statusText:GetText()=='Mistake replay')
+ ui:SeekReplay(-1);ui:Update(.1);ui:EndReplay()
+ ui:RetryCheckpoint();assert(ui.sim.rewound and ui.sim.state.assisted and ui.sim.state.scenario=='twinfangs')
+ ui:ShowScores();assert(ui.modalBody:GetText():find('No completed ranked runs yet.',1,true));ui:CloseModal()
+end)
+test('Twin Fangs actors keep animation state, allocate nothing in Draw and retain model fallbacks',function()
+ ui:Start(true);ui:Update(.1)
+ local fx=ui.renderer.twinFangsRenderer;local s=ui.sim.state
+ local count=#ui.renderer.frame.children;local calls=0
+ local old=fx.vexhul.actor.SetAnimation
+ fx.vexhul.actor.SetAnimation=function(...) calls=calls+1;return old(...) end
+ fx.vexhul.animation=nil
+ for i=1,100 do fx:Draw(ui.renderer,s) end
+ assert(calls==1 and #ui.renderer.frame.children==count)
+ fx.vexhul.actor.SetAnimation=old
+ for _,slot in ipairs(fx.actors) do slot.loaded=false;slot.requested=false end
+ fx:Draw(ui.renderer,s)
+ assert(not fx.vexhul.actor:IsShown() and fx.impacts[1].ring.active)
+ ui:Update(.1);assert(not ui.loadingScene)
+ for _,slot in ipairs(fx.actors) do slot.requested=true end
+ fx.nextCheck=0;fx:Check(now)
+end)
+test('Twin Fangs switch hides every owned visual and retains existing encounter controls',function()
+ local fx=ui.renderer.twinFangsRenderer
+ ui:SelectEncounter('rashok');ui:Update(.2)
+ for _,slot in ipairs(fx.actors) do assert(not slot.actor:IsShown()) end
+ for _,slot in ipairs(fx.impacts) do assert(not slot.fill:IsShown());for _,l in ipairs(slot.ring.lines) do assert(not l:IsShown()) end end
+ assert(not ui.fangsLabel:IsShown() and ui.loopButtons[1]:IsShown())
+ ui:SelectEncounter('sentinels');ui:Update(.2);assert(ui.sentinelsPingButton:IsShown() and not ui.fangsLabel:IsShown())
+ ui:SelectEncounter('sszorak');ui:Start();ui:Update(.2);assert(ui.sim.state.scenario=='sszorak' and ui.rehearsal)
+end)
+test('Twin Fangs native beam and gore follow channel, pause, replay and destruction',function()
+ ui:SelectEncounter('twinfangs');ui:Start();ui:Update(.1)
+ ui.sim._checkHazards=function() end
+ for i=1,260 do ui:Update(1/60) end
+ local fx=ui.renderer.twinFangsRenderer
+ assert(fx.beam.actor:IsShown() and fx.impacts[1].actor:IsShown())
+ assert(fx.beam.speed==1 and fx.vexhul.animation==125)
+ ui.sim:SetPaused(true);ui:Update(.1);assert(fx.beam.speed==0 and fx.impacts[1].speed==0)
+ ui.sim:SetPaused(false);ui:Update(.1);assert(fx.beam.speed==1)
+ local s=ui.sim.state;s.playbackSpeed=.25
+ fx:Draw(ui.renderer,s,true);assert(fx.beam.speed==.25)
+ s.playbackSpeed=nil
+ for i=1,1200 do ui:Update(1/60) end
+ assert(ui.sim.state.status=='finished' and not fx.beam.actor:IsShown())
+ for _,slot in ipairs(fx.impacts) do assert(not slot.actor:IsShown() and not slot.fill:IsShown()) end
+ local cleared=0
+ for _,slot in ipairs(fx.actors) do slot.actor.ClearModel=function() cleared=cleared+1 end end
+ fx:Destroy();assert(cleared==#fx.actors and fx.dead)
 end)
 print(string.format('INTEGRATION %d checks; %d failed. Mock/static proof only; no live WoW proof.',checks,failures))
 os.exit(failures==0 and 0 or 1)

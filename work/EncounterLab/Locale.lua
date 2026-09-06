@@ -3,6 +3,30 @@ local _, EL = ...
 -- English is both the source language and the fallback on every client locale.
 -- Keep complete phrases here; locale files translate these exact English keys.
 local english = {
+    "%s / %.1f s",
+    "Boss models loading - ground markers remain active",
+    "Choose an encounter. Its drills and settings appear in the training menu.\n\nRashok: lava waves and frontals.\nSszorak: dodge moving Tempest tornadoes.\nSentinels: Mythic toxin pairing.\nTwin Fangs: Heroic intermission dodging.",
+    "Congealed Gore - move clear",
+    "Congealed Gore",
+    "Dodge failed: %s\n[%s] Revive",
+    "Heroic - Flood and Storm",
+    "Heroic intermission practice with Vexhul and Ithraz's native boss models and the native Vile Flood effect. A client blood effect represents Congealed Gore.\n\nDocumented spell values: 4-second Flood cast, 14-second channel, 18-second Storm, 4-yard impacts and 6-second blood pools.\n\nThe 42-yard practice platform, 12-degree beam, 270-degree sweep, 1.5-second warnings, four impacts per volley, player baiting and randomized start/direction are training parameters awaiting live calibration. The room is an open stone approximation. Submerge, main-phase abilities and raid damage are outside this drill.\n\nThe same seed and movement reproduce the attempt. The last 6 seconds of a mistake can be replayed without affecting your live session.",
+    "Intermission dodge practice",
+    "Ithraz",
+    "Read the rotation - the green sector is a warning",
+    "Read the sweep. Dodge the impacts.",
+    "Revived behind the beam. This attempt is assisted.",
+    "Sanguine Storm",
+    "Start training to rehearse the intermission",
+    "The Twin Fangs",
+    "Twin Fangs - Heroic",
+    "Vexhul",
+    "Vile Flood + Sanguine Storm",
+    "Vile Flood - prepare",
+    "Vile Flood",
+    "Watch the green orbs around Vexhul: they show the sweep direction. The green sector warns where Vile Flood will start. It becomes dangerous after the 4-second cast and sweeps for 14 seconds. Move into the area the beam has already passed.\n\nRed circles warn before Sanguine Storm lands. Leave their 4-yard footprint before the inner ring disappears. The remaining blood pools stay dangerous for 6 seconds. Keep dodging while watching Vexhul.\n\nAny beam, impact or pool contact fails the clean dodge attempt. This is a strict practice rule: raid health, healing and Eternal Venom stacks are not simulated. Revive to continue or use Mistake replay and Retry checkpoint to review and repeat.\n\nNormal and Practice have separate local boards. Pausing, slowing down, reviving and checkpoint retries count as assistance.",
+    "Watch the orbiting green markers, then dodge the beam and red impacts.",
+
     "Two camps of 10 start at separate bosses, with shuffled positions, number counts and reactions. The bosses move to the center during the reveal. All 2s meet there; 1s ping and jump and 3s seek them across both camps. Visible 1+3 pairs can clear after the 1 pings. A simulated 3 waits for your manual ping if you have 1.\n\nThe addition and concealment rules follow the encounter. The 10/10 split, shuffled numbers across both camps, spawn positions, bot reactions, contact size and the default 2-second reveal are training values awaiting live calibration. Room scenery is a native model approximation. The main phase, raid damage and healing are not simulated.\n\nNormal always uses a 2-second reveal. Practice can change it below. Successful full-raid clears are ranked by your matching time, on a separate random-role board for each reveal duration.",
     "Your number (1, 2 or 3) and starting camp are drawn each attempt. Both bosses run to the center when Helical Toxins appears. Count your green orbs when Helical Toxins appears. Each player has four orbs; the rest are red. Other players' orbs are shrouded shortly afterwards.\n\n3: go around the center to a pinging 1 from either camp and touch them. Keep the middle clear for the 2s.\n2: move to the center between the bosses and touch another 2.\n1: ping yourself and keep jumping. A 3 comes to you. You must manually ping and jump after the reveal, before contact. Missing either action fails the attempt.\n\nOnly 2+2, 3+1 and 1+3 clear both players. Every other active contact immediately wipes the raid. Unresolved toxins expire after 30 seconds.\n\nClick the dedicated PING YOURSELF button when you have 1. The practice-ability key does not ping. Pings and square speech bubbles are simulated inside the arena.",
 
@@ -255,6 +279,8 @@ local english = {
 -- EL.F phrases are separate so ordinary percentages in help text are never
 -- interpreted as printf directives (for example, the words "100% speed").
 local formats = {
+    "%s / %.1f s",
+    "Dodge failed: %s\n[%s] Revive",
     "New attempt [%s]",
 
     "%.1f s / %d of 20 clear",

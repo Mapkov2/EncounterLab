@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.10.0
+
+- Added The Twin Fangs Heroic intermission to the encounter selector: Vile Flood warnings and rotating beam, Sanguine Storm impacts, and lingering Congealed Gore.
+- Added native Vexhul and Ithraz models, the client Vile Flood effect, and visible ground warnings that remain usable while models load.
+- Added repeatable/random attempts, separate scores, mistake replay and an assisted retry of the intermission.
+- Preserved the shared movement and camera input. No other addon is required.
+- Documented spell timings and the beam, arena and impact-pattern parameters still awaiting live calibration.
+- Offline mechanics, renderer and menu regression checks cover the new encounter; live-client visual acceptance remains pending.
+
 ## 0.9.2
 
 - Fixed startup errors when MidnightSimpleUnitFrames is not installed: all menu fonts now use the WoW client standard font for the active language.

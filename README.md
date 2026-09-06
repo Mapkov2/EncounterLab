@@ -10,6 +10,8 @@ EncounterLab is a standalone 3D training arena for **WoW Retail 12.1**. Open it 
 - **Sszorak:** practice Tempest tornado dodging, with different starting points and adjustable speed.
 - **Entombed Sentinels (Mythic):** rehearse the Helical Toxins intermission with a simulated 20-player raid. Your number is randomly assigned each attempt. Only 1+3, 3+1 and 2+2 contacts clear; other active contacts wipe the raid. As a 1, use the dedicated **PING YOURSELF** button and jump after the reveal. The 2s meet in the center; simulated 3s take routes around it to find the 1s.
 
+- **The Twin Fangs (Heroic):** practice the Vile Flood sweep together with Sanguine Storm impacts and lingering blood pools. Includes boss models, native Flood effects, repeatable seeds, local scores and mistake replay. Beam geometry and randomized patterns are training approximations.
+
 ## Features
 
 - Native 3D models and effects, fullscreen or windowed arena.
@@ -22,7 +24,7 @@ These are focused practice simulations, not complete boss encounters. Timings, r
 
 ## Install
 
-Download **EncounterLab-0.9.2.zip** from a release, extract the `EncounterLab` folder into `World of Warcraft/_retail_/Interface/AddOns/`, then restart WoW or reload the interface. Choose EncounterLab in the addon list and type `/el`.
+Download **EncounterLab-0.10.0.zip** from a release, extract the `EncounterLab` folder into `World of Warcraft/_retail_/Interface/AddOns/`, then restart WoW or reload the interface. Choose EncounterLab in the addon list and type `/el`.
 
 Use the runtime ZIP for installation. The source ZIP and GitHub source download also include development tools.
 

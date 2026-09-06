@@ -21,6 +21,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Sszorak rehearsal tests failed' }
     & lua 'tests\tempest_renderer_test.lua'
     if ($LASTEXITCODE -ne 0) { throw 'Tempest renderer tests failed' }
+    & lua 'tests\twin_fangs_test.lua'
+    if ($LASTEXITCODE -ne 0) { throw 'Twin Fangs tests failed' }
     & lua 'tests\integration_test.lua'
     if ($LASTEXITCODE -ne 0) { throw 'Integration tests failed' }
     & lua 'tests\input_test.lua'
